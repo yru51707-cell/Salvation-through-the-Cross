@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>手气图鉴</title>
+<style>
+  :root {
+    --forest: #1f3d2e;
+    --leaf: #4a7c59;
+    --mint: #a8d5ba;
+    --blossom: #f4a6b7;
+    --blossom-deep: #e0708a;
+    --cream: #fdf6f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: linear-gradient(160deg, var(--forest) 0%, #2d5240 45%, #3c6b4f 100%);
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .petal {
+    position: fixed;
+    top: -10%;
+    font-size: 20px;
+    opacity: 0.8;
+    animation: fall linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes fall {
+    to { transform: translateY(115vh) rotate(360deg); }
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 420px;
+    z-index: 1;
+  }
+
+  .title {
+    text-align: center;
+    color: var(--mint);
+    letter-spacing: 6px;
+    font-size: 14px;
+    margin-bottom: 6px;
+    opacity: 0.8;
+  }
+
+  .headline {
+    text-align: center;
+    color: var(--cream);
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 28px;
+    letter-spacing: 1px;
+  }
+
+  .card-stage {
+    position: relative;
+    height: 460px;
+    perspective: 1200px;
+  }
+
+  .card {
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    background: linear-gradient(155deg, var(--cream) 0%, #fff 60%);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.4) inset;
+    padding: 28px 26px;
+    display: flex;
+    flex-direction: column;
+    transform-style: preserve-3d;
+    transition: transform 0.7s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .card.flip {
+    transform: rotateY(360deg);
+  }
+
+  .badge {
+    align-self: flex-start;
+    background: var(--blossom);
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+  }
+
+  .emoji-big {
+    font-size: 64px;
+    text-align: center;
+    margin: 6px 0 14px;
+  }
+
+  .role-name {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--forest);
+    margin-bottom: 6px;
+  }
+
+  .role-tag {
+    text-align: center;
+    font-size: 13px;
+    color: var(--leaf);
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+
+  .divider {
+    height: 1px;
+    background: repeating-linear-gradient(to right, var(--mint) 0 6px, transparent 6px 12px);
+    margin-bottom: 18px;
+  }
+
+  .quote {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 17px;
+    line-height: 1.7;
+    color: #33332f;
+    padding: 0 4px;
+  }
+
+  .footer-num {
+    text-align: center;
+    font-size: 11px;
+    color: #b9b9b0;
+    letter-spacing: 3px;
+    margin-top: 10px;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 26px;
+  }
+
+  button {
+    flex: 1;
+    border: none;
+    border-radius: 30px;
+    padding: 15px 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  button:active { transform: scale(0.96); }
+
+  .btn-main {
+    background: linear-gradient(120deg, var(--blossom) 0%, var(--blossom-deep) 100%);
+    color: #fff;
+    box-shadow: 0 10px 20px rgba(224,112,138
