@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>麦穗</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: #1a1230;
+    font-family: 'Noto Serif SC', 'STSong', serif;
+    touch-action: manipulation;
+  }
+  #scene {
+    position: relative;
+    width: 100%; height: 100%;
+    background: linear-gradient(180deg,
+      #1a1230 0%,
+      #2d1b4e 30%,
+      #4a2f7a 55%,
+      #7a5aa8 75%,
+      #b48fc9 92%,
+      #d9b8d4 100%);
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .star {
+    position: absolute;
+    background: #f4e9ff;
+    border-radius: 50%;
+    animation: twinkle 3s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
+  }
+
+  #moon {
+    position: absolute;
+    top: 8%;
+    right: 14%;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fff9e8, #f4d99a 60%, #e0b96a 100%);
+    box-shadow: 0 0 40px 12px rgba(244, 217, 154, 0.35);
+  }
+
+  #hills {
+    position: absolute;
+    bottom: 32%;
+    width: 100%;
+    height: 18%;
+    background: #3a2a5c;
+    clip-path: polygon(0% 100%, 0% 40%, 15% 55%, 30% 30%, 48% 50%, 65% 20%, 82% 45%, 100% 25%, 100% 100%);
+    opacity: 0.75;
+  }
+
+  #field {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(180deg, #6b4a2f 0%, #4a3320 100%);
+    overflow: hidden;
+  }
+
+  .stalk {
+    position: absolute;
+    bottom: 0;
+    transform-origin: bottom center;
+    animation: sway var(--dur) ease-in-out infinite;
+    animation-delay: var(--delay);
+  }
+  .stalk svg { display: block; width: 100%; height: 100%; }
+
+  @keyframes sway {
+    0%, 100% { transform: rotate(var(--rot1)); }
+    50% { transform: rotate(var(--rot2)); }
+  }
+
+  .gust .stalk {
+    animation: gust 1.1s ease-out;
+  }
+  @keyframes gust {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(22deg); }
+    55% { transform: rotate(-10deg); }
+    80% { transform: rotate(6deg); }
+    100% { transform: rotate(0deg); }
+  }
+
+  .firefly {
+    position: absolute;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #f4e77a;
+    box-shadow: 0 0 8px 3px rgba(244, 231, 122, 0.8);
+    animation: drift linear infinite, glow 2.2s ease-in-out infinite;
+  }
+  @keyframes glow {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.95; }
+  }
+  @keyframes drift {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(20px, -18px); }
+    50% { transform: translate(-10px, -35px); }
+    75% { transform: translate(-25px, -10px); }
+    100% { transform: translate(0, 0); }
+  }
+
+  #poem {
+    position: absolute;
+    top: 10%;
+    left: 8%;
+    color: #f4ecff;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    line-height: 1.9;
+    font-size: 17px;
+    letter-spacing: 2px;
+    opacity: 0;
+    animation: fadeIn 2s ease forwards 0.6s;
+    z-index: 5;
+  }
+  #poem .line { display: block; }
+  #poem .title {
+    font-size: 15px;
+    opacity: 0.65;
+    margin-bottom: 10px;
+    letter-spacing: 3px;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  #hint {
+    position: absolute;
+    bottom: 4%;
+    width: 100%;
+    text-align: center;
+    color: rgba(244, 236, 255, 0.55);
+    font-size: 12px;
+    letter-spacing: 3px;
+    z-index: 5;
+    animation: fadeIn 2s ease forwards 1.8s;
+    opacity: 0;
+  }
+</style>
+</head>
+<body>
+
+<div id="scene">
+  <div id="hills"></div>
+  <div id="poem">
+    <span class="title">· 麦 秋 ·</span>
+    <span class="line">麦穗低垂夜色沉,</span>
+    <span class="line">风过田野作歌吟。</span>
+    <span class="line">星子落在谁肩上,</span>
+    <span class="line">此心安处是归人。</span>
+  </div>
+  <div id="field"></div>
+  <div id="hint">轻触田野 · 起风</div>
+</div>
+
+<script>
+const scene = document.getElementById('scene');
+const field = document.getElementById('field');
+
+for (let i = 0; i < 70; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const size = Math.random() * 2 + 0.5;
+  s.style.width = size + 'px';
+  s.style.height = size + 'px';
+  s.style.left = Math.random() * 100 + '%';
+  s.style.top = Math.random() * 55 + '%';
+  s.style.animationDelay = Math.random() * 3 + 's';
+  scene.appendChild(s);
+}
+
+const stalkCount = 90;
+const wheatSVG = (hue) => `
+<svg viewBox="0 0 20 140" xmlns="http://www.w3.org/2000/svg">
+  <line x1="10" y1="140" x2="10" y2="20" stroke="${hue.stem}" stroke-width="2.2"/>
+  <g fill="${hue.head}">
+    <ellipse cx="10" cy="10" rx="4" ry="9"/>
+    <ellipse cx="5" cy="18" rx="3.2" ry="7" transform="rotate(-25 5 18)"/>
+    <ellipse cx="15" cy="18" rx="3.2" ry="7" transform="rotate(25 15 18)"/>
+    <ellipse cx="4" cy="30" rx="2.8" ry="6" transform="rotate(-35 4 30)"/>
+    <ellipse cx="16" cy="30" rx="2.8" ry="6" transform="rotate(35 16 30)"/>
+  </g>
+</svg>`;
+
+const goldTones = [
+  { stem: '#8a6a2f', head: '#e8c547' },
+  { stem: '#7a5d29', head: '#d9ae3e' },
+  { stem: '#93732f', head: '#f0cf6a' },
+  { stem: '#6f5424', head: '#c99b34' }
+];
+
+for (let i = 0; i < stalkCount; i++) {
+  const stalk = document.createElement('div');
+  stalk.className = 'stalk';
+  const heightPx = 90 + Math.random() * 60;
+  const widthPx = heightPx * (20/140);
+  stalk.style.width = widthPx + 'px';
+  stalk.style.height = heightPx + 'px';
+  stalk.style.left = (Math.random() * 100) + '%';
+  stalk.style.zIndex = Math.floor(heightPx);
+  const rot1 = (Math.random() * 4 - 2).toFixed(1);
+  const rot2 = (parseFloat(rot1) + (Math.random() * 6 + 3)).toFixed(1);
+  stalk.style.setProperty('--rot1', rot1 + 'deg');
+  stalk.style.setProperty('--rot2', rot2 + 'deg');
+  stalk.style.setProperty('--dur', (2.5 + Math.random() * 2) + 's');
+  stalk.style.setProperty('--delay', (Math.random() * -3) + 's');
+  const tone = goldTones[Math.floor(Math.random() * goldTones.length)];
+  stalk.innerHTML = wheatSVG(tone);
+  field.appendChild(stalk);
+}
+
+for (let i = 0; i < 14; i++) {
+  const f = document.createElement('div');
+  f.className = 'firefly';
+  f.style.left = Math.random() * 100 + '%';
+  f.style.top = (40 + Math.random() * 35) + '%';
+  f.style.animationDuration = (6 + Math.random() * 6) + 's, ' + (1.5 + Math.random() * 2) + 's';
+  f.style.animationDelay = (Math.random() * -6) + 's, ' + (Math.random() * -2) + 's';
+  scene.appendChild(f);
+}
+
+let gustCooldown = false;
+scene.addEventListener('click', () => {
+  if (gustCooldown) return;
+  gustCooldown = true;
+  field.classList.remove('gust');
+  void field.offsetWidth;
+  field.classList.add('gust');
+  setTimeout(() => { gustCooldown = false; }, 900);
+});
+</script>
+
+</body>
+</html>
