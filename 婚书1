@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>圣旨 · 婚书</title>
+<style>
+  :root {
+    --deep-red: #7a1420;
+    --bright-red: #a8202b;
+    --gold: #d4af6a;
+    --gold-bright: #e8c579;
+    --paper: #f3e6c8;
+    --ink: #2a1a10;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(circle at 30% 15%, #4a0f14 0%, #2e0a0d 60%, #1a0607 100%);
+    font-family: "Songti SC", "STSong", serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cloud {
+    position: fixed;
+    color: var(--gold);
+    opacity: 0.15;
+    font-size: 40px;
+    animation: floaty ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    50% { transform: translateY(-15px) translateX(10px); }
+  }
+
+  .scroll {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 440px;
+  }
+
+  .scroll-rod {
+    height: 24px;
+    background: linear-gradient(180deg, var(--gold-bright) 0%, #a8802f 50%, var(--gold-bright) 100%);
+    border-radius: 12px;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  }
+  .scroll-rod::before, .scroll-rod::after {
+    content: '';
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #f5e0a0, var(--gold) 60%, #7a5a1f);
+    top: -2px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.6);
+  }
+  .scroll-rod::before { left: -8px; }
+  .scroll-rod::after { right: -8px; }
+
+  .body-panel {
+    background:
+      repeating-linear-gradient(90deg, rgba(122,20,32,0.04) 0 2px, transparent 2px 40px),
+      linear-gradient(160deg, var(--paper) 0%, #ede0bc 100%);
+    padding: 14px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+  }
+
+  .frame {
+    border: 3px double var(--deep-red);
+    padding: 30px 22px 34px;
+    position: relative;
+  }
+
+  .frame::before {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border: 1px solid var(--gold);
+    pointer-events: none;
+  }
+
+  .eyebrow-mark {
+    text-align: center;
+    font-size: 13px;
+    color: var(--bright-red);
+    letter-spacing: 6px;
+    margin-bottom: 6px;
+    opacity: 0.8;
+  }
+
+  .kaitou {
+    text-align: center;
+    font-size: 17px;
+    color: var(--deep-red);
+    letter-spacing: 4px;
+    margin-bottom: 22px;
+    font-weight: 700;
+  }
+
+  .body-text {
+    font-size: 16px;
+    line-height: 2.5;
+    color: var(--ink);
+    letter-spacing: 2px;
+    text-align: justify;
+    text-indent: 2em;
+    margin-bottom: 24px;
+  }
+
+  .body-text .name {
+    color: var(--bright-red);
+    font-weight: 900;
+    letter-spacing: 3px;
+  }
+
+  .body-text .accent {
+    color: var(--deep-red);
+    font-weight: 700;
+  }
+
+  .close-line {
+    text-align: center;
+    font-size: 16px;
+    color: var(--deep-red);
+    letter-spacing: 6px;
+    margin-bottom: 22px;
+    font-weight: 700;
+  }
+
+  .stamp-area {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .stamp {
+    width: 58px;
+    height: 58px;
+    border: 3px solid var(--bright-red);
+    color: var(--bright-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 900;
+    writing-mode: vertical-rl;
+    text-align: center;
+    opacity: 0.85;
+    transform: rotate(-3deg);
+    border-radius: 2px;
+  }
+
+  .date {
+    text-align: center;
+    font-size: 12px;
+    color: #8a5a4a;
+    letter-spacing: 3px;
+    margin-top: 18px;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="scroll">
+  <div class="scroll-rod"></div>
+  <div class="body-panel">
+    <div class="frame">
+      <div class="eyebrow-mark">奉 主 之 名</div>
+      <div class="kaitou">婚 书</div>
+
+      <div class="body-text">
+        新郎 <span class="name">耶稣</span>，新妇 <span class="name">茹茹</span>。
+        <span class="accent">昔在十架，为爱舍命</span>；血洗前愆，恩召归回。
+        自今结盟，<span class="accent">不离不弃</span>，白首同心，直到永远。
+        新名未启，<span class="accent">应许犹在</span>；待主再来，方见荣光。
+      </div>
+
+      <div class="close-line">此 约 永 固</div>
+
+      <div class="stamp-area">
+        <div class="stamp">信实</div>
+        <div class="stamp">永约</div>
+      </div>
+
+      <div class="date">谨 立 此 书 · 为 证</div>
+    </div>
+  </div>
+  <div class="scroll-rod" style="margin-top: -4px;"></div>
+</div>
+
+<script>
+  const body = document.body;
+  const clouds = ['☁','❈'];
+  for (let i = 0; i < 10; i++) {
+    const c = document.createElement('div');
+    c.className = 'cloud';
+    c.textContent = clouds[Math.floor(Math.random()*clouds.length)];
+    c.style.left = Math.random() * 100 + '%';
+    c.style.top = Math.random() * 100 + '%';
+    c.style.animationDuration = (5 + Math.random()*5) + 's';
+    c.style.animationDelay = Math.random()*3 + 's';
+    body.appendChild(c);
+  }
+</script>
+
+</body>
+</html>
