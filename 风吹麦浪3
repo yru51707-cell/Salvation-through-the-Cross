@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>风过田野 · 湖边静立</title>
+<style>
+  :root{
+    --sky-top:#cfe8c8;
+    --sky-bottom:#e9f4dc;
+    --crop-dark:#2f5e2c;
+    --crop-mid:#437f3c;
+    --crop-light:#5fa14f;
+    --water-deep:#2e6a5c;
+    --water-mid:#4a9382;
+    --water-light:#8fd0b8;
+    --bank:#8a8557;
+    --bank-dark:#6f6a45;
+    --sun:#fff6cf;
+    --ink:#2e4a2a;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    height:100%;
+    overflow:hidden;
+    font-family:"Songti SC","STSong","SimSun",serif;
+    background:var(--sky-bottom);
+  }
+  .scene{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    background:linear-gradient(to bottom, var(--sky-top) 0%, var(--sky-bottom) 50%);
+    overflow:hidden;
+  }
+
+  .sun{
+    position:absolute;
+    top:7%;
+    right:12%;
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    background:radial-gradient(circle, #fffef2 0%, var(--sun) 55%, rgba(255,246,207,0) 75%);
+    box-shadow:0 0 50px 26px rgba(255,246,207,0.5);
+    animation:sunpulse 6s ease-in-out infinite;
+  }
+  @keyframes sunpulse{
+    0%,100%{opacity:1;}
+    50%{opacity:0.85;}
+  }
+
+  .cloud{
+    position:absolute;
+    background:rgba(255,255,255,0.75);
+    border-radius:50px;
+    filter:blur(1px);
+    opacity:0.8;
+  }
+  .cloud::before, .cloud::after{
+    content:"";
+    position:absolute;
+    background:inherit;
+    border-radius:50%;
+  }
+  .c1{ width:120px; height:30px; top:11%; left:-200px; animation:drift 55s linear infinite; }
+  .c1::before{ width:60px; height:50px; top:-24px; left:12px; }
+  .c1::after{ width:44px; height:38px; top:-16px; left:60px; }
+  .c2{ width:90px; height:24px; top:17%; left:-160px; animation:drift 70s linear infinite; animation-delay:-20s; }
+  .c2::before{ width:44px; height:36px; top:-18px; left:8px; }
+  .c2::after{ width:34px; height:28px; top:-10px; left:46px; }
+  @keyframes drift{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(calc(100vw + 300px)); }
+  }
+
+  .bird{
+    position:absolute;
+    font-size:13px;
+    color:var(--ink);
+    opacity:0.5;
+    animation:fly 42s linear infinite;
+  }
+  .b1{ top:14%; left:-5%; animation-duration:38s; }
+  .b2{ top:11%; left:-8%; animation-duration:48s; animation-delay:-14s; }
+  @keyframes fly{
+    from{ transform:translate(0,0); }
+    to{ transform:translate(115vw, -5vh); }
+  }
+
+  .poem{
+    position:absolute;
+    top:5%;
+    left:6%;
+    color:var(--ink);
+    opacity:0.7;
+    font-size:14px;
+    line-height:2;
+    letter-spacing:2px;
+    writing-mode:vertical-rl;
+    z-index:6;
+  }
+
+  .water{
+    position:absolute;
+    top:40%;
+    left:0;
+    width:100%;
+    height:60%;
+    background:linear-gradient(to bottom, var(--water-light) 0%, var(--water-mid) 40%, var(--water-deep) 100%);
+    overflow:hidden;
+    z-index:1;
+  }
+  .wave-svg{
+    position:absolute;
+    left:-10%;
+    width:120%;
+    opacity:0.5;
+  }
+  .wave-svg path{
+    fill:none;
+    stroke:rgba(255,255,255,0.55);
+    stroke-width:2;
+  }
+  .w1{ top:8%; animation:waveshift 7s linear infinite; }
+  .w2{ top:20%; animation:waveshift 9s linear infinite reverse; opacity:0.4; }
+  .w3{ top:34%; animation:waveshift 11s linear infinite; opacity:0.35; }
+  .w4{ top:50%; animation:waveshift 13s linear infinite reverse; opacity:0.3; }
+  .w5{ top:68%; animation:waveshift 15s linear infinite; opacity:0.25; }
+  @keyframes waveshift{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-120px); }
+  }
+  .sparkle{
+    position:absolute;
+    width:6px;
+    height:2px;
+    background:rgba(255,255,255,0.85);
+    border-radius:2px;
+    animation:twinkle 3s ease-in-out infinite;
+    z-index:2;
+  }
+  @keyframes twinkle{
+    0%,100%{ opacity:0; transform:scaleX(0.6); }
+    50%{ opacity:1; transform:scaleX(1.3); }
+  }
+
+  .bank{
+    position:absolute;
+    top:52%;
+    left:50%;
+    transform:translateX(-50%);
+    width:38%;
+    min-width:220px;
+    height:9%;
+    background:linear-gradient(to bottom, var(--bank) 0%, var(--bank-dark) 100%);
+    border-radius:50% 50% 40% 40% / 60% 60% 40% 40%;
+    z-index:3;
+    box-shadow:0 6px 14px rgba(0,0,0,0.15);
+  }
+
+  .figure{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translateX(-50%);
+    width:13px;
+    height:42px;
+    z-index:4;
+  }
+  .figure .head{
+    position:absolute;
+    top:0;
+    left:2.5px;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--ink);
+  }
+  .figure .body{
+    position:absolute;
+    top:8px;
+    left:0;
+    width:13px;
+    height:28px;
+    background:var(--ink);
+    border-radius:4px 4px 2px 2px;
+    animation:breeze 3s ease-in-out infinite;
+    transform-origin:bottom center;
+  }
+  @keyframes breeze{
+    0%,100%{ transform:rotate(-1.5deg); }
+    50%{ transform:rotate(2deg); }
+  }
+
+  .field{
+    position:absolute;
+    bottom:-2%;
+    left:0;
+    width:100%;
+    height:44%;
+    z-index:8;
+    overflow:hidden;
+  }
+  .stalk-row{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:130%;
+    height:100%;
+    display:flex;
+    align-items:flex-end;
+  }
+  .stalk{
+    flex:0 0 auto;
+    width:8px;
+    margin:0 4px;
+    border-radius:4px 4px 0 0;
+    transform-origin:bottom center;
+    animation:sway 2.3s ease-in-out infinite;
+  }
+  @keyframes sway{
+    0%,100%{ transform:rotate(-7deg); }
+    50%{ transform:rotate(10deg); }
+  }
+
+  .gust{
+    position:absolute;
+    top:0;
+    height:100%;
+    width:26vw;
+    background:linear-gradient(100deg, transparent 0%, rgba(255,255,255,0.14) 45%, transparent 90%);
+    animation:gustmove 9s ease-in infinite;
+    pointer-events:none;
+    z-index:9;
+  }
+  .gust.g2{ animation-delay:3s; opacity:0.7; }
+  .gust.g3{ animation-delay:6s; opacity:0.5; }
+  @keyframes gustmove{
+    0%{ transform:translateX(-40vw); }
+    100%{ transform:translateX(120vw); }
+  }
+
+  .caption{
+    position:absolute;
+    bottom:3%;
+    left:50%;
+    transform:translateX(-50%);
+    color:#f4f9ee;
+    font-size:14px;
+    opacity:0.85;
+    letter-spacing:3px;
+    text-align:center;
+    white-space:nowrap;
+    z-index:10;
+    text-shadow:0 1px 3px rgba(0,0,0,0.25);
+  }
+</style>
+</head>
+<body>
+<div class="scene" id="scene">
+
+  <div class="sun"></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="bird b1"><span>﹀</span></div>
+  <div class="bird b2"><span>﹀</span></div>
+
+  <div class="poem">风吹稻浪 水静人立</div>
+
+  <div class="water" id="water"></div>
+
+  <div class="bank"></div>
+  <div class="figure">
+    <div class="head"></div>
+    <div class="body"></div>
+  </div>
+
+  <div class="field" id="field"></div>
+
+  <div class="gust g1"></div>
+  <div class="gust g2"></div>
+  <div class="gust g3"></div>
+
+  <div class="caption">那年风里 · 你只是静静看着</div>
+</div>
+
+<script>
+  const field = document.getElementById('field');
+  const rowConfigs = [
+    { count: 70, heightMin: 60, heightMax: 100, color:getCSS('--crop-dark'), delayStep:0.012, bottom:'0%' },
+    { count: 60, heightMin: 90, heightMax: 140, color:getCSS('--crop-mid'), delayStep:0.015, bottom:'6%' },
+    { count: 46, heightMin: 120, heightMax: 170, color:getCSS('--crop-light'), delayStep:0.02, bottom:'12%' },
+  ];
+
+  function getCSS(varName){
+    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+  }
+
+  rowConfigs.forEach((cfg, rowIndex) => {
+    const row = document.createElement('div');
+    row.className = 'stalk-row';
+    row.style.bottom = cfg.bottom;
+    row.style.zIndex = rowIndex;
+    for(let i=0;i<cfg.count;i++){
+      const stalk = document.createElement('div');
+      stalk.className = 'stalk';
+      const h = cfg.heightMin + Math.random()*(cfg.heightMax-cfg.heightMin);
+      stalk.style.height = h + 'px';
+      stalk.style.background = cfg.color;
+      stalk.style.animationDelay = (i*cfg.delayStep) + 's';
+      stalk.style.animationDuration = (2 + Math.random()*1.2) + 's';
+      row.appendChild(stalk);
+    }
+    field.appendChild(row);
+  });
+
+  const water = document.getElementById('water');
+
+  function makeWavePath(){
+    let d = 'M0,10 ';
+    for(let x=0;x<=1200;x+=60){
+      const y = 10 + Math.sin(x/60) * 4;
+      d += `L${x},${y.toFixed(1)} `;
+    }
+    return d;
+  }
+
+  const waveRows = [
+    {cls:'w1'}, {cls:'w2'}, {cls:'w3'}, {cls:'w4'}, {cls:'w5'}
+  ];
+  waveRows.forEach(row => {
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('class', 'wave-svg ' + row.cls);
+    svg.setAttribute('height', '20');
+    svg.setAttribute('viewBox', '0 0 1200 20');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    const path = document.createElementNS(svgNS, 'path');
+    path.setAttribute('d', makeWavePath());
+    svg.appendChild(path);
+    water.appendChild(svg);
+  });
+
+  for(let i=0;i<30;i++){
+    const s = document.createElement('div');
+    s.className = 'sparkle';
+    s.style.left = Math.random()*100 + '%';
+    s.style.top = 5 + Math.random()*75 + '%';
+    s.style.animationDelay = (Math.random()*3) + 's';
+    s.style.animationDuration = (2 + Math.random()*2) + 's';
+    water.appendChild(s);
+  }
+</script>
+</body>
+</html>
