@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>玫瑰园 · 阳光正好</title>
+<style>
+  :root{
+    --sky-top:#bfe0f0;
+    --sky-bottom:#f3f9ec;
+    --grass-dark:#3f7a3a;
+    --grass-mid:#5fa14f;
+    --leaf-dark:#2f6b2a;
+    --leaf-mid:#478a3f;
+    --rose-red:#c2273a;
+    --rose-red-dark:#8f1c2a;
+    --rose-red-light:#e0495a;
+    --stem:#3f6b34;
+    --sun:#fff3c4;
+    --ink:#3a2a1a;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    height:100%;
+    overflow:hidden;
+    font-family:"Songti SC","STSong","SimSun",serif;
+    background:var(--sky-bottom);
+  }
+  .scene{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    background:linear-gradient(to bottom, var(--sky-top) 0%, var(--sky-bottom) 46%);
+    overflow:hidden;
+  }
+
+  .sun{
+    position:absolute;
+    top:6%;
+    right:13%;
+    width:82px;
+    height:82px;
+    border-radius:50%;
+    background:radial-gradient(circle, #fffef2 0%, var(--sun) 55%, rgba(255,243,196,0) 75%);
+    box-shadow:0 0 50px 26px rgba(255,243,196,0.5);
+    animation:sunpulse 6s ease-in-out infinite;
+  }
+  @keyframes sunpulse{
+    0%,100%{opacity:1;}
+    50%{opacity:0.85;}
+  }
+
+  .cloud{
+    position:absolute;
+    background:rgba(255,255,255,0.8);
+    border-radius:50px;
+    filter:blur(1px);
+  }
+  .cloud::before, .cloud::after{
+    content:"";
+    position:absolute;
+    background:inherit;
+    border-radius:50%;
+  }
+  .c1{ width:110px; height:28px; top:12%; left:-200px; animation:drift 58s linear infinite; }
+  .c1::before{ width:56px; height:46px; top:-22px; left:12px; }
+  .c1::after{ width:40px; height:34px; top:-14px; left:58px; }
+  .c2{ width:84px; height:22px; top:20%; left:-160px; animation:drift 74s linear infinite; animation-delay:-22s; }
+  .c2::before{ width:42px; height:34px; top:-16px; left:8px; }
+  @keyframes drift{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(calc(100vw + 260px)); }
+  }
+
+  .bee{
+    position:absolute;
+    font-size:14px;
+    animation:buzz 6.5s ease-in-out infinite;
+  }
+  .bee1{ top:36%; left:22%; animation-delay:0s; }
+  .bee2{ top:42%; left:62%; animation-delay:2.2s; }
+  @keyframes buzz{
+    0%,100%{ transform:translate(0,0); }
+    20%{ transform:translate(18px,-10px); }
+    45%{ transform:translate(30px,6px); }
+    70%{ transform:translate(10px,-14px); }
+  }
+
+  .poem{
+    position:absolute;
+    top:5%;
+    left:6%;
+    color:var(--ink);
+    opacity:0.65;
+    font-size:14px;
+    line-height:2;
+    letter-spacing:2px;
+    writing-mode:vertical-rl;
+    z-index:6;
+  }
+
+  /* Grass ground */
+  .ground{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:52%;
+    background:linear-gradient(to bottom, var(--grass-mid) 0%, var(--grass-dark) 100%);
+    z-index:1;
+  }
+
+  /* Rose bush wrapper: stem + leaves + bloom */
+  .bush{
+    position:absolute;
+    bottom:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .sway{
+    animation:sway 3s ease-in-out infinite;
+    transform-origin:bottom center;
+  }
+  @keyframes sway{
+    0%,100%{ transform:rotate(-2.5deg); }
+    50%{ transform:rotate(3deg); }
+  }
+
+  .stem{
+    width:5px;
+    background:var(--stem);
+    border-radius:3px;
+  }
+  .leaf-pair{
+    position:relative;
+    width:44px;
+    height:0;
+  }
+  .leaf{
+    position:absolute;
+    width:20px;
+    height:14px;
+    background:var(--leaf-mid);
+    border-radius:0 60% 0 60%;
+  }
+  .leaf.left{ left:-2px; transform:rotate(-25deg) scaleX(-1); background:var(--leaf-dark); }
+  .leaf.right{ right:-2px; transform:rotate(25deg); }
+
+  .rose-bloom{
+    position:relative;
+    width:34px;
+    height:34px;
+  }
+  .petal-layer{
+    position:absolute;
+    border-radius:50%;
+  }
+  .rose-bloom .p1{
+    width:34px; height:34px; top:0; left:0;
+    background:radial-gradient(circle at 40% 35%, var(--rose-red-light) 0%, var(--rose-red) 60%, var(--rose-red-dark) 100%);
+  }
+  .rose-bloom .p2{
+    width:22px; height:22px; top:6px; left:6px;
+    background:radial-gradient(circle at 35% 30%, var(--rose-red) 0%, var(--rose-red-dark) 100%);
+    opacity:0.9;
+  }
+  .rose-bloom .p3{
+    width:11px; height:11px; top:11.5px; left:11.5px;
+    background:var(--rose-red-dark);
+    opacity:0.9;
+  }
+  .rose-bloom::before, .rose-bloom::after{
+    content:"";
+    position:absolute;
+    width:14px;
+    height:18px;
+    background:var(--rose-red);
+    border-radius:0 70% 0 70%;
+    top:4px;
+    opacity:0.85;
+  }
+  .rose-bloom::before{ left:-6px; transform:rotate(-20deg); }
+  .rose-bloom::after{ right:-6px; transform:rotate(20deg) scaleX(-1); }
+
+  .bud{
+    position:relative;
+    width:16px;
+    height:20px;
+  }
+  .bud .shell{
+    position:absolute;
+    width:16px;
+    height:20px;
+    background:linear-gradient(160deg, var(--rose-red-light) 0%, var(--rose-red-dark) 100%);
+    border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+  }
+  .bud .sepal{
+    position:absolute;
+    bottom:-4px;
+    left:2px;
+    width:4px;
+    height:8px;
+    background:var(--leaf-dark);
+    border-radius:2px;
+    transform:rotate(-15deg);
+  }
+  .bud .sepal.r{ left:auto; right:2px; transform:rotate(15deg); }
+
+  /* Falling petals */
+  .fpetal{
+    position:absolute;
+    top:-20px;
+    width:8px;
+    height:8px;
+    background:var(--rose-red-light);
+    border-radius:60% 0 60% 0;
+    opacity:0.75;
+    animation:fall linear infinite;
+    z-index:3;
+  }
+  @keyframes fall{
+    0%{ transform:translateY(0) rotate(0deg); opacity:0.85; }
+    100%{ transform:translateY(110vh) rotate(360deg); opacity:0; }
+  }
+
+  .caption{
+    position:absolute;
+    bottom:3%;
+    left:50%;
+    transform:translateX(-50%);
+    color:#f4f9ee;
+    font-size:14px;
+    opacity:0.9;
+    letter-spacing:3px;
+    text-align:center;
+    white-space:nowrap;
+    z-index:10;
+    text-shadow:0 1px 3px rgba(0,0,0,0.3);
+  }
+</style>
+</head>
+<body>
+<div class="scene" id="scene">
+
+  <div class="sun"></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="bee bee1">🐝</div>
+  <div class="bee bee2">🐝</div>
+
+  <div class="poem">玫瑰园里 · 暖阳正好</div>
+
+  <div class="ground" id="ground"></div>
+
+  <div class="caption">红玫瑰满园 · 风一吹都是香</div>
+</div>
+
+<script>
+  const scene = document.getElementById('scene');
+  const ground = document.getElementById('ground');
+
+  function buildBush(hasBloom, height, budCount){
+    const wrap = document.createElement('div');
+    wrap.className = 'sway';
+    wrap.style.position = 'relative';
+
+    const bush = document.createElement('div');
+    bush.className = 'bush';
+    bush.style.position = 'relative';
+    bush.style.alignItems = 'center';
+
+    const stem = document.createElement('div');
+    stem.className = 'stem';
+    stem.style.height = height + 'px';
+    bush.appendChild(stem);
+
+    // leaves partway up
+    const leafPair = document.createElement('div');
+    leafPair.className = 'leaf-pair';
+    leafPair.style.position = 'absolute';
+    leafPair.style.bottom = (height*0.4) + 'px';
+    leafPair.style.left = '50%';
+    leafPair.style.transform = 'translateX(-50%)';
+    leafPair.innerHTML = '<div class="leaf left"></div><div class="leaf right"></div>';
+    bush.appendChild(leafPair);
+
+    // top bloom or bud cluster
+    const top = document.createElement('div');
+    top.style.position = 'absolute';
+    top.style.bottom = height + 'px';
+    top.style.left = '50%';
+    top.style.transform = 'translateX(-50%)';
+    if(hasBloom){
+      top.innerHTML = '<div class="rose-bloom"><div class="petal-layer p1"></div><div class="petal-layer p2"></div><div class="petal-layer p3"></div></div>';
+    } else {
+      top.innerHTML = '<div class="bud"><div class="shell"></div><div class="sepal"></div><div class="sepal r"></div></div>';
+    }
+    bush.appendChild(top);
+
+    wrap.appendChild(bush);
+    wrap.style.animationDelay = (Math.random()*1.5) + 's';
+    return wrap;
+  }
+
+  const rowCount = 11;
+  for(let i=0;i<rowCount;i++){
+    const isBloom = Math.random() > 0.28;
+    const h = 50 + Math.random()*40;
+    const bush = buildBush(isBloom, h, 0);
+    bush.style.position = 'absolute';
+    bush.style.left = (4 + i * (92/(rowCount-1))) + '%';
+    bush.style.bottom = (Math.random()*6) + '%';
+    ground.appendChild(bush);
+  }
+
+  // falling petals
+  for(let i=0;i<12;i++){
+    const p = document.createElement('div');
+    p.className = 'fpetal';
+    p.style.left = Math.random()*100 + '%';
+    p.style.animationDuration = (7 + Math.random()*5) + 's';
+    p.style.animationDelay = (Math.random()*8) + 's';
+    p.style.width = p.style.height = (5 + Math.random()*5) + 'px';
+    scene.appendChild(p);
+  }
+</script>
+</body>
+</html>
