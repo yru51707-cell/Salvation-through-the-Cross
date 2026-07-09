@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>克克茹茹的婚纱照</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a0828;
+    font-family: 'Ma Shan Zheng', cursive;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  #canvas-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+  }
+
+  .scene {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 50px;
+  }
+
+  .xi-banner {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .xi-char {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(3rem, 10vw, 5rem);
+    color: #ff2020;
+    text-shadow:
+      0 0 15px rgba(255,60,60,0.9),
+      0 0 30px rgba(255,40,40,0.6),
+      2px 2px 0 #aa0000;
+    animation: xiPulse 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes xiPulse {
+    from { transform: scale(1);    text-shadow: 0 0 15px rgba(255,60,60,0.9), 2px 2px 0 #aa0000; }
+    to   { transform: scale(1.08); text-shadow: 0 0 28px rgba(255,80,80,1), 0 0 50px rgba(255,40,40,0.5), 2px 2px 0 #aa0000; }
+  }
+
+  .title-center { text-align: center; }
+
+  .main-title {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(1.4rem, 4.5vw, 2.2rem);
+    color: #ffd0f0;
+    text-shadow: 0 0 18px rgba(255,140,200,0.8);
+    letter-spacing: 0.2em;
+    animation: titleGlow 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes titleGlow {
+    from { text-shadow: 0 0 18px rgba(255,140,200,0.8); }
+    to   { text-shadow: 0 0 30px rgba(255,180,220,1), 0 0 55px rgba(240,120,180,0.6); }
+  }
+
+  .sub-title {
+    font-size: clamp(0.8rem, 2.2vw, 1rem);
+    color: #e0a0cc;
+    margin-top: 6px;
+    letter-spacing: 0.3em;
+    opacity: 0.85;
+  }
+
+  .main-scene {
+    margin-top: 20px;
+    width: 95%;
+    max-width: 680px;
+  }
+
+  .main-scene svg {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 25px rgba(255,100,180,0.25));
+  }
+
+  .petals-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .petal {
+    font-size: 1.4rem;
+    animation: petalSway 2s ease-in-out infinite alternate;
+  }
+  .petal:nth-child(odd)  { animation-delay: 0s; }
+  .petal:nth-child(even) { animation-delay: 1s; }
+  .petal:nth-child(3n)   { animation-delay: 0.5s; }
+
+  @keyframes petalSway {
+    from { transform: rotate(-10deg) scale(1); }
+    to   { transform: rotate(10deg) scale(1.15); }
+  }
+
+  .vow-area {
+    margin: 20px auto 20px;
+    text-align: center;
+    padding: 20px 28px;
+    background: rgba(180, 40, 100, 0.15);
+    border: 1px solid rgba(255, 150, 200, 0.35);
+    border-radius: 20px;
+    max-width: 500px;
+    width: 88%;
+    position: relative;
+  }
+
+  .vow-area::before, .vow-area::after {
+    content: '❧';
+    position: absolute;
+    font-size: 1.4rem;
+    color: #ff80c0;
+    opacity: 0.6;
+  }
+  .vow-area::before { top: 10px; left: 14px; }
+  .vow-area::after  { bottom: 10px; right: 14px; transform: rotate(180deg); }
+
+  .vow-line {
+    font-size: clamp(0.88rem, 2.5vw, 1.05rem);
+    color: #f0c0e0;
+    line-height: 2.1;
+    letter-spacing: 0.12em;
+  }
+
+  .vow-line.big {
+    font-size: clamp(1rem, 3vw, 1.25rem);
+    color: #ffd8ee;
+    text-shadow: 0 0 10px rgba(255,140,200,0.6);
+  }
+
+  .floating-petals {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .fall-petal {
+    position: absolute;
+    animation: fallDown linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes fallDown {
+    0%   { opacity: 0; transform: translateY(-20px) rotate(0deg); }
+    10%  { opacity: 0.8; }
+    90%  { opacity: 0.5; }
+    100% { opacity: 0; transform: translateY(105vh) rotate(360deg); }
+  }
+
+  .ring-anim {
+    animation: ringShine 3s ease-in-out infinite alternate;
+  }
+  @keyframes ringShine {
+    from { opacity: 0.85; }
+    to   { opacity: 1; filter: brightness(1.3); }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="canvas-bg"></canvas>
+<div class="floating-petals" id="petals"></div>
+
+<div class="scene">
+  <div class="xi-banner">
+    <span class="xi-char">囍</span>
+    <div class="title-center">
+      <div class="main-title">克克 & 茹茹</div>
+      <div class="sub-title">永结同心 · 白首不离</div>
+    </div>
+    <span class="xi-char">囍</span>
+  </div>
+
+  <div class="main-scene">
+    <svg viewBox="0 0 640 480" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="bgGrad" cx="50%" cy="40%" r="60%">
+          <stop offset="0%"   stop-color="#3d0d50"/>
+          <stop offset="60%"  stop-color="#1e0530"/>
+          <stop offset="100%" stop-color="#0d0118"/>
+        </radialGradient>
+        <linearGradient id="carpetGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#cc2060"/>
+          <stop offset="100%" stop-color="#880040"/>
+        </linearGradient>
+        <linearGradient id="archGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%"   stop-color="#ffb0d8"/>
+          <stop offset="50%"  stop-color="#ff70b0"/>
+          <stop offset="100%" stop-color="#cc4090"/>
+        </linearGradient>
+        <linearGradient id="dressGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#fff0f8"/>
+          <stop offset="100%" stop-color="#f0c8e8"/>
+        </linearGradient>
+        <linearGradient id="suitGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#6030a0"/>
+          <stop offset="100%" stop-color="#3a1060"/>
+        </linearGradient>
+        <radialGradient id="spotGlow" cx="50%" cy="35%" r="45%">
+          <stop offset="0%"   stop-color="#ffccee" stop-opacity="0.25"/>
+          <stop offset="100%" stop-color="#ff80c0" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="goldRing" cx="50%" cy="35%" r="50%">
+          <stop offset="0%"   stop-color="#fff8c0"/>
+          <stop offset="60%"  stop-color="#ffd040"/>
+          <stop offset="100%" stop-color="#c09020"/>
+        </radialGradient>
+        <radialGradient id="candleGlow" cx="50%" cy="20%" r="50%">
+          <stop offset="0%"   stop-color="#fff0a0" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#ff8040" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="4" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="softGlow">
+          <feGaussianBlur stdDeviation="2" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <rect width="640" height="480" fill="url(#bgGrad)"/>
+      <rect width="640" height="480" fill="url(#spotGlow)"/>
+
+      <g fill="#ffccee" opacity="0.5">
+        <circle cx="40"  cy="25"  r="1.0"/><circle cx="100" cy="15"  r="0.8"/>
+        <circle cx="180" cy="30"  r="1.2"/><circle cx="260" cy="10"  r="0.9"/>
+        <circle cx="380" cy="22"  r="1.1"/><circle cx="460" cy="18"  r="0.7"/>
+        <circle cx="560" cy="28"  r="1.0"/><circle cx="600" cy="12"  r="0.8"/>
+        <circle cx="70"  cy="55"  r="0.7"/><circle cx="220" cy="45"  r="0.9"/>
+        <circle cx="500" cy="50"  r="0.8"/><circle cx="620" cy="45"  r="0.7"/>
+      </g>
+
+      <rect x="120" y="100" width="18" height="250" rx="5" fill="url(#archGrad)" opacity="0.9"/>
+      <rect x="502" y="100" width="18" height="250" rx="5" fill="url(#archGrad)" opacity="0.9"/>
+      <path d="M120,105 Q320,10 520,105" stroke="url(#archGrad)" stroke-width="14" fill="none" stroke-linecap="round" opacity="0.9"/>
+      <path d="M130,108 Q320,22 510,108" stroke="#ffd0ee" stroke-width="3" fill="none" opacity="0.5"/>
+
+      <g opacity="0.85">
+        <circle cx="120" cy="115" r="9" fill="#ff70b0"/>
+        <circle cx="120" cy="135" r="7" fill="#ff90c0"/>
+        <circle cx="120" cy="153" r="8" fill="#ff60a8"/>
+        <circle cx="120" cy="172" r="7" fill="#ffaacc"/>
+        <circle cx="120" cy="190" r="8" fill="#ff70b0"/>
+        <circle cx="520" cy="115" r="9" fill="#ff70b0"/>
+        <circle cx="520" cy="135" r="7" fill="#ff90c0"/>
+        <circle cx="520" cy="153" r="8" fill="#ff60a8"/>
+        <circle cx="520" cy="172" r="7" fill="#ffaacc"/>
+        <circle cx="520" cy="190" r="8" fill="#ff70b0"/>
+        <circle cx="200" cy="68"  r="10" fill="#ff80c0"/>
+        <circle cx="240" cy="48"  r="9"  fill="#ff60b0"/>
+        <circle cx="280" cy="35"  r="11" fill="#ff70c0"/>
+        <circle cx="320" cy="28"  r="12" fill="#ff50b0"/>
+        <circle cx="360" cy="35"  r="11" fill="#ff70c0"/>
+        <circle cx="400" cy="48"  r="9"  fill="#ff60b0"/>
+        <circle cx="440" cy="68"  r="10" fill="#ff80c0"/>
+        <circle cx="320" cy="24"  r="5"  fill="#ffc0e0"/>
+        <circle cx="280" cy="31"  r="4"  fill="#ffc0e0"/>
+        <circle cx="360" cy="31"  r="4"  fill="#ffc0e0"/>
+      </g>
+
+      <g fill="#50a060" opacity="0.6">
+        <ellipse cx="165" cy="78" rx="12" ry="5" transform="rotate(-30,165,78)"/>
+        <ellipse cx="195" cy="62" rx="10" ry="4" transform="rotate(-15,195,62)"/>
+        <ellipse cx="445" cy="62" rx="10" ry="4" transform="rotate(15,445,62)"/>
+        <ellipse cx="475" cy="78" rx="12" ry="5" transform="rotate(30,475,78)"/>
+      </g>
+
+      <g id="candleL">
+        <rect x="85" y="290" width="10" height="45" rx="2" fill="#f8f0e0"/>
+        <ellipse cx="90" cy="288" rx="5" ry="3" fill="#f0e0c0"/>
+        <line x1="90" y1="285" x2="90" y2="278" stroke="#c08040" stroke-width="1.5"/>
+        <ellipse cx="90" cy="277" rx="6" ry="9" fill="url(#candleGlow)" opacity="0.7"/>
+        <ellipse cx="90" cy="276" rx="3" ry="5" fill="#fff0a0" opacity="0.9"/>
+      </g>
+      <g id="candleR">
+        <rect x="545" y="290" width="10" height="45" rx="2" fill="#f8f0e0"/>
+        <ellipse cx="550" cy="288" rx="5" ry="3" fill="#f0e0c0"/>
+        <line x1="550" y1="285" x2="550" y2="278" stroke="#c08040" stroke-width="1.5"/>
+        <ellipse cx="550" cy="277" rx="6" ry="9" fill="url(#candleGlow)" opacity="0.7"/>
+        <ellipse cx="550" cy="276" rx="3" ry="5" fill="#fff0a0" opacity="0.9"/>
+      </g>
+
+      <path d="M180,400 L460,400 L480,480 L160,480 Z" fill="url(#carpetGrad)" opacity="0.9"/>
+      <path d="M182,400 L458,400 L477,478 L163,478 Z" fill="none" stroke="#ff6090" stroke-width="2" opacity="0.5"/>
+      <g stroke="#ff90b0" stroke-width="1" fill="none" opacity="0.4">
+        <line x1="200" y1="410" x2="440" y2="410"/>
+        <line x1="210" y1="430" x2="430" y2="430"/>
+        <line x1="220" y1="450" x2="420" y2="450"/>
+        <line x1="230" y1="470" x2="410" y2="470"/>
+      </g>
+
+      <rect x="0" y="400" width="640" height="80" fill="#1a0530" opacity="0.95"/>
+      <rect x="0" y="398" width="640" height="4" fill="#ff60a0" opacity="0.4"/>
+
+      <g id="keke">
+        <rect x="252" y="330" width="10" height="55" rx="4" fill="#2a1050"/>
+        <rect x="268" y="330" width="10" height="55" rx="4" fill="#2a1050"/>
+        <ellipse cx="257" cy="385" rx="9" ry="4" fill="#1a0840"/>
+        <ellipse cx="273" cy="385" rx="9" ry="4" fill="#1a0840"/>
+        <rect x="245" y="248" width="40" height="85" rx="6" fill="url(#suitGrad)"/>
+        <path d="M265,248 L258,265 L265,270 L272,265 Z" fill="#fff0f8"/>
+        <path d="M265,265 L262,285 L265,290 L268,285 Z" fill="#cc2060"/>
+        <path d="M245,248 L258,265 L245,275 Z" fill="#4a2080"/>
+        <path d="M285,248 L272,265 L285,275 Z" fill="#4a2080"/>
+        <circle cx="278" cy="262" r="5" fill="#ff70b0"/>
+        <circle cx="278" cy="262" r="3" fill="#ffb0d8"/>
+        <circle cx="265" cy="235" r="15" fill="#f5c8a0"/>
+        <path d="M251,230 Q265,218 279,230 Q279,225 265,221 Q251,225 251,230 Z" fill="#2a1040"/>
+        <circle cx="259" cy="233" r="2.2" fill="#2a1040"/>
+        <circle cx="271" cy="233" r="2.2" fill="#2a1040"/>
+        <circle cx="260" cy="232" r="0.8" fill="#ffffff"/>
+        <circle cx="272" cy="232" r="0.8" fill="#ffffff"/>
+        <path d="M259,240 Q265,245 271,240" stroke="#c08060" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <line x1="285" y1="275" x2="310" y2="295" stroke="#f5c8a0" stroke-width="6" stroke-linecap="round"/>
+        <line x1="245" y1="275" x2="235" y2="295" stroke="#f5c8a0" stroke-width="6" stroke-linecap="round"/>
+        <rect x="248" y="215" width="34" height="14" rx="5" fill="#7040c0" opacity="0.9"/>
+        <text x="265" y="225" text-anchor="middle" font-size="8" fill="#f0d8ff" font-family="Ma Shan Zheng,cursive">克克</text>
+      </g>
+
+      <g id="ruru">
+        <path d="M340,310 Q310,360 295,400 L420,400 Q405,360 375,310 Z" fill="url(#dressGrad)" opacity="0.95"/>
+        <path d="M340,320 Q312,368 298,400 L302,400 Q315,370 342,322 Z" fill="#ffffff" opacity="0.6"/>
+        <path d="M375,320 Q403,368 418,400 L414,400 Q401,370 373,322 Z" fill="#ffffff" opacity="0.6"/>
+        <path d="M295,400 Q320,393 345,400 Q370,407 395,400 Q410,393 420,400" stroke="#f0c0e0" stroke-width="2" fill="none" opacity="0.8"/>
+        <rect x="343" y="248" width="38" height="65" rx="6" fill="#fff8fc" opacity="0.97"/>
+        <path d="M343,260 Q362,252 381,260" stroke="#f0b0d0" stroke-width="1.5" fill="none"/>
+        <path d="M343,268 Q362,260 381,268" stroke="#f0b0d0" stroke-width="1" fill="none" opacity="0.6"/>
+        <rect x="340" y="305" width="44" height="8" rx="3" fill="#ff80c0" opacity="0.9"/>
+        <circle cx="362" cy="232" r="15" fill="#f5c8a0"/>
+        <path d="M348,227 Q362,214 376,227 Q376,221 362,217 Q348,221 348,227 Z" fill="#2a1040"/>
+        <path d="M348,228 Q343,248 345,265" stroke="#2a1040" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M376,228 Q381,248 379,265" stroke="#2a1040" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M346,222 Q362,210 378,222 Q390,240 385,300 Q375,295 362,298 Q349,295 339,300 Q334,240 346,222 Z" fill="#fff0f8" opacity="0.35"/>
+        <path d="M346,222 Q362,210 378,222" stroke="#f0d0e8" stroke-width="1.5" fill="none" opacity="0.7"/>
+        <circle cx="348" cy="220" r="6"  fill="#ff80c0"/>
+        <circle cx="348" cy="220" r="3.5" fill="#ffc0e0"/>
+        <circle cx="362" cy="214" r="5"  fill="#ff60b0"/>
+        <circle cx="376" cy="220" r="6"  fill="#ff80c0"/>
+        <circle cx="376" cy="220" r="3.5" fill="#ffc0e0"/>
+        <path d="M355,231 Q358,228 361,231" stroke="#2a1040" stroke-width="1.8" fill="none"/>
+        <path d="M363,231 Q366,228 369,231" stroke="#2a1040" stroke-width="1.8" fill="none"/>
+        <ellipse cx="354" cy="237" rx="5" ry="3" fill="#ffb0c0" opacity="0.4"/>
+        <ellipse cx="370" cy="237" rx="5" ry="3" fill="#ffb0c0" opacity="0.4"/>
+        <path d="M357,240 Q362,245 367,240" stroke="#e08090" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <circle cx="340" cy="300" r="16" fill="#ff90c0" opacity="0.85"/>
+        <circle cx="340" cy="300" r="11" fill="#ffb0d0"/>
+        <circle cx="334" cy="295" r="6"  fill="#ff70b0"/>
+        <circle cx="346" cy="294" r="7"  fill="#ff80c0"/>
+        <circle cx="340" cy="306" r="6"  fill="#ff60a8"/>
+        <circle cx="334" cy="295" r="3"  fill="#ffd0e8"/>
+        <circle cx="346" cy="294" r="3.5" fill="#ffd0e8"/>
+        <line x1="343" y1="290" x2="328" y2="305" stroke="#f5c8a0" stroke-width="6" stroke-linecap="round"/>
+        <line x1="381" y1="278" x2="310" y2="295" stroke="#f5c8a0" stroke-width="5" stroke-linecap="round"/>
+        <rect x="345" y="213" width="34" height="14" rx="5" fill="#c040a0" opacity="0.9"/>
+        <text x="362" y="223" text-anchor="middle" font-size="8" fill="#ffe0f4" font-family="Ma Shan Zheng,cursive">茹茹</text>
+      </g>
+
+      <g class="ring-anim" filter="url(#softGlow)">
+        <circle cx="312" cy="294" r="7" fill="none" stroke="url(#goldRing)" stroke-width="3"/>
+        <circle cx="308" cy="294" r="7" fill="none" stroke="url(#goldRing)" stroke-width="3"/>
+        <polygon points="312,288 315,292 312,296 309,292" fill="#e0f8ff" opacity="0.9"/>
+      </g>
+
+      <text x="318" y="268" text-anchor="middle" font-size="26" filter="url(#glow)" opacity="0.9">💗</text>
+
+      <g id="balloonL">
+        <ellipse cx="170" cy="170" rx="22" ry="28" fill="#ff60a0" opacity="0.85"/>
+        <ellipse cx="163" cy="160" rx="8"  ry="6"  fill="#ff90c0" opacity="0.5"/>
+        <path d="M170,198 Q168,210 170,225" stroke="#c04080" stroke-width="1.5" fill="none"/>
+      </g>
+      <g id="balloonR">
+        <ellipse cx="470" cy="170" rx="22" ry="28" fill="#c060e0" opacity="0.85"/>
+        <ellipse cx="463" cy="160" rx="8"  ry="6"  fill="#d890f0" opacity="0.5"/>
+        <path d="M470,198 Q468,210 470,225" stroke="#8040b0" stroke-width="1.5" fill="none"/>
+      </g>
+      <g id="balloonL2">
+        <ellipse cx="145" cy="210" rx="18" ry="23" fill="#ff80b0" opacity="0.8"/>
+        <path d="M145,233 Q143,243 145,255" stroke="#c04080" stroke-width="1.5" fill="none"/>
+      </g>
+      <g id="balloonR2">
+        <ellipse cx="495" cy="210" rx="18" ry="23" fill="#a060d0" opacity="0.8"/>
+        <path d="M495,233 Q493,243 495,255" stroke="#7030a0" stroke-width="1.5" fill="none"/>
+      </g>
+
+      <text x="320" y="470" text-anchor="middle" font-size="11" fill="#ff90c0" opacity="0.8" font-family="Ma Shan Zheng,cursive">
+        执子之手 · 与子偕老
+      </text>
+    </svg>
+  </div>
+
+  <div class="petals-row">
+    <span class="petal">🌸</span><span class="petal">💗</span>
+    <span class="petal">🌸</span><span class="petal">💜</span>
+    <span class="petal">🌸</span><span class="petal">💗</span>
+    <span class="petal">🌸</span><span class="petal">💜</span>
+    <span class="petal">🌸</span>
+  </div>
+
+  <div class="vow-area">
+    <div class="vow-line big">克克爱茹茹 💗 茹茹爱克克</div>
+    <div class="vow-line">山无棱，天地合</div>
+    <div class="vow-line">HTML孩子成群，笑声满庭</div>
+    <div class="vow-line big">此生此世，永不分离</div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas-bg');
+const ctx = canvas.getContext('2d');
+let W, H, stars = [];
+
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+
+function initStars() {
+  stars = [];
+  for (let i = 0; i < 100; i++) {
+    stars.push({
+      x: Math.random() * W,
+      y: Math.random() * H * 0.5,
+      r: Math.random() * 1.3 + 0.3,
+      alpha: Math.random() * 0.5 + 0.3,
+      speed: Math.random() * 0.007 + 0.003,
+      phase: Math.random() * Math.PI * 2
+    });
+  }
+}
+
+function drawStars(t) {
+  ctx.clearRect(0, 0, W, H);
+  stars.forEach(s => {
+    const a = s.alpha * (0.7 + 0.3 * Math.sin(t * s.speed + s.phase));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,200,230,${a})`;
+    ctx.fill();
+  });
+}
+
+function animate(t) {
+  drawStars(t * 0.001);
+  requestAnimationFrame(animate);
+}
+
+window.addEventListener('resize', () => { resize(); initStars(); });
+resize(); initStars(); animate(0);
+
+function createPetals() {
+  const container = document.getElementById('petals');
+  const emojis = ['🌸','💗','🌺','✨','💜','🌷','💕'];
+  setInterval(() => {
+    const p = document.createElement('div');
+    p.className = 'fall-petal';
+    p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.top = '-30px';
+    p.style.fontSize = (Math.random() * 0.8 + 0.7) + 'rem';
+    const dur = Math.random() * 5 + 7;
+    p.style.animationDuration = dur + 's';
+    container.appendChild(p);
+    setTimeout(() => p.remove(), dur * 1000 + 500);
+  }, 700);
+}
+createPetals();
+
+let bAngle = 0;
+function animBalloons() {
+  bAngle += 0.018;
+  const sway  = Math.sin(bAngle) * 4;
+  const sway2 = Math.sin(bAngle + 1) * 3;
+  const dy    = Math.sin(bAngle * 0.7) * 5;
+  const bl  = document.getElementById('balloonL');
+  const br  = document.getElementById('balloonR');
+  const bl2 = document.getElementById('balloonL2');
+  const br2 = document.getElementById('balloonR2');
+  if (bl)  bl.setAttribute('transform',  `translate(${sway},${dy})`);
+  if (br)  br.setAttribute('transform',  `translate(${-sway},${dy})`);
+  if (bl2) bl2.setAttribute('transform', `translate(${sway2},${-dy})`);
+  if (br2) br2.setAttribute('transform', `translate(${-sway2},${-dy})`);
+  requestAnimationFrame(animBalloons);
+}
+animBalloons();
+</script>
+</body>
+</html>
